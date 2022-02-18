@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
   ProjectModel.getAll()
     .then(projects => {
-        res.json(projects)
+        res.status(200).json(projects)
     })
     .catch(next);
 });

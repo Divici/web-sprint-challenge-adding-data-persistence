@@ -1,15 +1,27 @@
-const db = require('../../data/db-config')
+const db = require('../../data/dbConfig')
 
-function getAll() {
-    return db('projects')
+async function getAll() {
+    const projects = await db('projects')
+
+    const result = []
+
+    projects.forEach(project=>{
+        if(project.project_id){
+            result.push({
+                project_id: project.project_id,
+                project_name: project.project_name,
+                project_description: project.project_description,
+                project_completed: project.project_completed
+            })
+        }
+    })
+    return result
 }
 
-function add(project) { 
+async function add(project) { 
+    const project_id = await db('projects').insert(project)
     
-    return db('projects').insert(project)
-    .then(([project_id])=>{
-      return db('projects').where('project_id', project_id).first()
-    })
+    return db('projects').where('project_id', project_id).first()
 }
 
 module.exports = {
