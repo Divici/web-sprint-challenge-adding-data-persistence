@@ -11,7 +11,7 @@ router.get('/', (req, res, next) => {
     .catch(next);
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const project = req.body
     const {project_name} = req.body;
     if(project_name === undefined || typeof project_name !== 'string' || !project_name.trim() ){
@@ -20,11 +20,13 @@ router.post('/', (req, res, next) => {
     else {
         ProjectModel.add(project)
             .then(project => {
-                res.status(201).json(project)
+                res.status(201).json({
+                    ...project,
+                    project_completed: project.project_completed === 0 ? false : true
+                })
             })
             .catch(next)
     }
-  
   })
 
 router.use((err, req, res, next) => { // eslint-disable-line
