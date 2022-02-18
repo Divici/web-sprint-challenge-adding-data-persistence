@@ -14,13 +14,16 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     const task = req.body
     const {task_description} = req.body;
-    if(task_description === undefined || typeof task_description !== 'string' || !task_description.trim() ){
+    if(task_description === undefined || typeof task_description !== 'string' ){
         next({status: 400, message: "invalid task_description"})
     }
     else {
         TaskModel.add(task)
             .then(task => {
-                res.status(201).json(task)
+                res.status(201).json({
+                  ...task,
+                  task_completed: task.task_completed === 0 ? false : true
+                })
             })
             .catch(next)
     }
